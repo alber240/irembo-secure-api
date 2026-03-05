@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Irembo Client Simulator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            margin-bottom: 20px;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .btn-demo {
+            margin: 5px;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .btn-demo:hover {
+            transform: scale(1.05);
+        }
+        .response-area {
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            height: 300px;
+            overflow-y: auto;
+        }
+        .success-badge {
+            background-color: #28a745;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        .danger-badge {
+            background-color: #dc3545;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        .flag-rwanda {
+            width: 30px;
+            height: 20px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <!-- Header -->
+        <div class="header text-center">
+            <h1>🇷🇼 Irembo Client Simulator</h1>
+            <p class="lead">Securing Rwanda's E-Government Services with HMAC Authentication</p>
+        </div>
+
+        <!-- Main Row -->
+        <div class="row">
+            <!-- Control Panel -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">🎮 Demo Controls</h5>
+                        <p class="text-muted">Choose a scenario to test:</p>
+                        
+                        <div class="mb-3">
+                            <label for="citizenId" class="form-label">Citizen ID:</label>
+                            <input type="text" class="form-control" id="citizenId" value="12345">
+                        </div>
+                        
+                        <button class="btn btn-success btn-demo w-100" onclick="sendRequest(false)">
+                            ✅ 1. Send Valid Request
+                        </button>
+                        <p class="text-muted small mt-1">Normal operation - should be ACCEPTED</p>
+                        
+                        <button class="btn btn-warning btn-demo w-100" onclick="sendRequest(true)">
+                            ⚠️ 2. Tamper with Request
+                        </button>
+                        <p class="text-muted small mt-1">Change citizen ID after signing - should be REJECTED</p>
+                        
+                        <button class="btn btn-danger btn-demo w-100" onclick="replayRequest()">
+                            🔄 3. Replay Attack
+                        </button>
+                        <p class="text-muted small mt-1">Send same request twice - second should be REJECTED</p>
+                        
+                        <hr>
+                        
+                        <h6>📊 Request Stats</h6>
+                        <div id="stats">
+                            <p>Captured requests: <span id="requestCount">0</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Response Display -->
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">📡 Live Request Feed</h5>
+                        <div id="responseArea" class="response-area">
+                            <p>⏳ Ready to send requests...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- How It Works -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">🔍 How HMAC Authentication Works</h5>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h6>1️⃣ Client Prepares</h6>
+                                <p class="small">Generates timestamp + unique nonce + HMAC signature</p>
+                            </div>
+                            <div class="col-md-4">
+                                <h6>2️⃣ Server Verifies</h6>
+                                <p class="small">Checks timestamp, nonce, and recomputes HMAC</p>
+                            </div>
+                            <div class="col-md-4">
+                                <h6>3️⃣ Result</h6>
+                                <p class="small">✅ Valid requests succeed<br>❌ Tampered requests get 401</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/client_app.js') }}"></script>
+</body>
+</html>
